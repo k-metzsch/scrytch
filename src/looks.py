@@ -1,0 +1,2 @@
+class Looks:
+    pass
