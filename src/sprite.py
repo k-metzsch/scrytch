@@ -8,12 +8,15 @@ class Sprite(Motion, Looks):
         self.original_image = pygame.image.load(image_path).convert_alpha()
         self.size = (size, size)
         self.image = self._get_scaled_image(self.original_image, size)
-        self.center = pygame.math.Vector2(position)  # Store the intended center
+        self.center = pygame.math.Vector2(position)
         self.image_rotated = pygame.transform.rotate(self.image, direction)
         self.position = self.image_rotated.get_rect(center=self.center)
         self.shown = shown
         self.rotate_degrees = 0
         super().__init__(self)
+        
+    def get_pos(self):
+        return self.center
 
     def _get_scaled_image(self, image, size):
         if size:

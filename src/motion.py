@@ -1,41 +1,102 @@
+import threading
+import time
 import pygame
+import math
 
 class Motion:
     def __init__(self, sprite):
         self.sprite = sprite
         self.rotate_degrees = 0
-        
+        self._glide_thread = None
+        self._glide_stop = threading.Event()
+        self._movement_blocked = False
+
+    def __update_position(self):
+        self.sprite.position = self.sprite.image_rotated.get_rect(center=self.sprite.center)
+
     def turn(self, degrees):
+        if self._movement_blocked:
+            return
         self.rotate_degrees += degrees
         self.sprite.image_rotated = pygame.transform.rotate(self.sprite.image, self.rotate_degrees)
-        self.sprite.position = self.sprite.image_rotated.get_rect(center=self.sprite.center)
+        self.__update_position()
 
     def go_to(self, x, y):
-        self.sprite.position = [x, y]
+        if self._movement_blocked:
+            return
+        self.sprite.center.x = x
+        self.sprite.center.y = y
+        self.__update_position()
 
-    def glide(self, secs, x, y):
-        # Optional: implement smooth movement over time if needed
-        self.sprite.position = [x, y]
+    def __animate_glide(self, target, speed, fps=60, force=False):
+        if force:
+            self._movement_blocked = True
+        while not self._glide_stop.is_set():
+            direction = target - self.sprite.center
+            distance = direction.length()
+            if distance < speed or distance == 0:
+                self.sprite.center = target
+                self.__update_position()
+                break
+            direction = direction.normalize()
+            self.sprite.center += direction * speed
+            self.__update_position()
+            time.sleep(1 / fps)
+        if force:
+            self._movement_blocked = False
+
+    def glide(self, speed, target_x, target_y, force=False, fps=60):
+        # speed equals to pixels per frame (not seconds)
+        self._glide_stop.set()
+        if self._glide_thread and self._glide_thread.is_alive():
+            self._glide_thread.join()
+        self._glide_stop.clear()
+        target = pygame.math.Vector2(target_x, target_y)
+        self._glide_thread = threading.Thread(target=self.__animate_glide, args=(target, speed, fps, force))
+        self._glide_thread.daemon = True
+        self._glide_thread.start()
+    
+    def stop_glide(self):
+        self._glide_stop.set()
+        if self._glide_thread and self._glide_thread.is_alive():
+            self._glide_thread.join()
 
     def point_in_direction(self, degrees):
+        if self._movement_blocked:
+            return
         self.sprite.image_rotated = pygame.transform.rotate(self.sprite.image, degrees)
-        self.sprite.position = self.sprite.image_rotated.get_rect(center=self.sprite.center)
-        pass
+        self.__update_position()
 
-    def point_towards(self, target_sprite):
-        # Optional: implement pointing logic if needed
-        pass
+    def point_towards(self, target):
+        if self._movement_blocked:
+            return
+        target_x, target_y = target.get_pos()
+        dx = target_x - self.sprite.center.x
+        dy = target_y - self.sprite.center.y
+        self.rotate_degrees = math.degrees(math.atan2(-dy, dx))
+        self.sprite.image_rotated = pygame.transform.rotate(self.sprite.image, self.rotate_degrees)
+        self.__update_position()
 
-    def change_x_by(self, amount):
-        self.sprite.center.x += amount
-        self.sprite.position = self.sprite.image_rotated.get_rect(center=self.sprite.center)
+    def change_x_by(self, x):
+        if self._movement_blocked:
+            return
+        self.sprite.center.x += x
+        self.__update_position()
 
-    def change_x_to(self, amount):
-        self.sprite.position[0] = amount
+    def change_x_to(self, x):
+        if self._movement_blocked:
+            return
+        self.sprite.center.x = x
+        self.__update_position()
 
-    def change_y_by(self, amount):
-        self.sprite.center.y += amount
-        self.sprite.position = self.sprite.image_rotated.get_rect(center=self.sprite.center)
+    def change_y_by(self, y):
+        if self._movement_blocked:
+            return
+        self.sprite.center.y += y
+        self.__update_position()
 
-    def change_y_to(self, amount):
-        self.sprite.position[1] = amount
+    def change_y_to(self, y):
+        if self._movement_blocked:
+            return
+        self.sprite.center.y = y
+        self.__update_position()
