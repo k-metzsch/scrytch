@@ -7,9 +7,9 @@ from src.sound import Sound
 
 class Scrython(ABC, Events, Looks, Sensing, Sound):
     @abstractmethod
-    def sprites(self):
+    def sprites(self,):
         return []
 
     @abstractmethod
-    def logic(self):
+    def logic(self, engine):
         pass
