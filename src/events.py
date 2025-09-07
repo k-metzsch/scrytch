@@ -10,7 +10,7 @@ class Events:
     def when_started(self, handler):
         self._started_handlers.append(handler)
 
-    def run_started(self):
+    def _run_started(self):
         if not self.once:
             for handler in self._started_handlers:
                 handler()

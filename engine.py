@@ -1,19 +1,17 @@
 import pygame
 import sys
 
-from src.sprite import Sprite
-
-class Engine(Sprite):
-    def __init__(self, game_logic, width=800, height=600, title="Scrython"):
+class Engine:
+    def __init__(self, game_logic, width, height, title):
         pygame.init()
         pygame.display.set_caption(title)
-        self.screen = pygame.display.set_mode((width, height))        
+        self.window_size = (width, height)
+        self.screen = pygame.display.set_mode(self.window_size)        
         self.clock = pygame.time.Clock()
         self.running = True
         self.game_logic = game_logic
         self._first_loop = True
-        self.sprites = game_logic.sprites()
-        
+        self.sprites = self.sprites()
 
     def run(self, fps=60):
         while self.running:
@@ -21,10 +19,10 @@ class Engine(Sprite):
                 if event.type == pygame.QUIT:
                     self.running = False
             
-            self.game_logic.logic(self)
+            self.game_logic.logic()
 
             if self._first_loop:
-                self.game_logic.run_started()
+                self.game_logic._run_started()
                 self._first_loop = False
 
             self.screen.fill((255, 255, 255))
