@@ -31,3 +31,6 @@ class Events:
     
     def broadcast_message(self, message):
         pass
+
+    def broadcast_message_and_wait(self, message):
+        pass
