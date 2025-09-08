@@ -18,16 +18,12 @@ class Engine:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-            
-            self.game_logic.logic()
 
-            if self._first_loop:
-                self.game_logic._run_started()
-                self._first_loop = False
+            for sprite in self.sprites:
+                sprite.logic()
 
             self.screen.fill((255, 255, 255))
 
-            # Draw all sprites
             for sprite in self.sprites:
                 sprite._draw(self.screen)
 

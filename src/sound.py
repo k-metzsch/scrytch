@@ -1,2 +1,6 @@
+
+
 class Sound:
-    pass
+    def __init__(self, sprite):
+        self.sprite = sprite
+
