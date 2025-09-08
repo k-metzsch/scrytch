@@ -27,7 +27,6 @@ KEYS = {
     "x": pygame.K_x,
     "y": pygame.K_y,
     "z": pygame.K_z,
-    "space": pygame.K_SPACE,
     "0": pygame.K_0,
     "1": pygame.K_1,
     "2": pygame.K_2,
@@ -38,4 +37,9 @@ KEYS = {
     "7": pygame.K_7,
     "8": pygame.K_8,
     "9": pygame.K_9,
+    "space": pygame.K_SPACE,
+    "left": pygame.K_LEFT,
+    "right": pygame.K_RIGHT,
+    "up": pygame.K_UP,
+    "down": pygame.K_DOWN,
 }

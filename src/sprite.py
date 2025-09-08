@@ -8,7 +8,7 @@ from src.sound import Sound
 
 
 class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
-    def __init__(self, image_path, position=(0, 0), size=None, shown=True, direction=0):
+    def __init__(self, image_path: str, position: tuple[int, int] = (0, 0), size: int | None = None, shown: bool = True, direction: int = 0):
         self.original_image = pygame.image.load(image_path).convert_alpha()
         self.size = size if size else self.original_image.get_size()
         self.image = self.__get_scaled_image(self.original_image, self.size)
@@ -26,10 +26,13 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
         Sound.__init__(self, self)
         
     @abstractmethod
-    def logic(self):
+    def events(self):
         pass
 
-    def __get_scaled_image(self, image, size):
+    def get_pos(self) -> pygame.math.Vector2:
+        return self.center
+
+    def __get_scaled_image(self, image, size: int | tuple[int, int] | None) -> pygame.Surface:
         if size:
             if isinstance(size, tuple):
                 return pygame.transform.smoothscale(image, size)
@@ -37,7 +40,7 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
                 return pygame.transform.smoothscale(image, (size, size))
         return image
 
-    def _set_rotation(self, degrees):
+    def _set_rotation(self, degrees: int):
         self.rotate_degrees = degrees
         self.image = self.__get_scaled_image(self.original_image, self.size)
         self.image = pygame.transform.rotate(self.image, self.rotate_degrees)
@@ -48,6 +51,6 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
         self.rect = self.image.get_rect(center=prev_center)
         self.center = pygame.math.Vector2(self.rect.center)
 
-    def _draw(self, screen):
+    def _draw(self, screen: pygame.Surface):
         if self.shown:
             screen.blit(self.image, self.rect)

@@ -3,6 +3,7 @@ import time
 import pygame
 import math
 
+
 class Motion:
     def __init__(self, sprite):
         self.sprite = sprite
@@ -14,13 +15,17 @@ class Motion:
 
     def __update_position(self):
         self.sprite.rect.center = self.sprite.center
+    
+    @property
+    def mouse(self):
+        return pygame.mouse
 
-    def turn(self, degrees):
+    def turn(self, degrees: int):
         if self.__movement_blocked:
             return
         
         self.rotate_degrees += degrees
-        self.sprite._set_rotation(self.rotate_degrees)
+        self.sprite.__set_rotation(self.rotate_degrees)
         self.__update_position()
 
     def go_to(self, x, y):
@@ -31,7 +36,7 @@ class Motion:
         self.sprite.center.y = y
         self.__update_position()
 
-    def __animate_glide(self, target, speed, fps, force):
+    def __animate_glide(self, target, speed: int, fps: int, force: bool):
         # Force disable all other animation besides stop_glide
         if force:
             self.__movement_blocked = True
@@ -54,7 +59,7 @@ class Motion:
         if force:
             self.__movement_blocked = False
 
-    def glide(self, speed, target_x, target_y, force=True):
+    def glide(self, speed: int, target_x: int, target_y: int, force: bool = True):
         self._glide_stop.set()
         
         if self._glide_thread and self._glide_thread.is_alive():
@@ -66,7 +71,7 @@ class Motion:
         self._glide_thread.daemon = True
         self._glide_thread.start()
         
-    def glide_to_mouse(self, speed, force=True):
+    def glide_to_mouse(self, speed: int, force: bool = True):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.glide(speed, mouse_x, mouse_y, force)
     
@@ -75,11 +80,11 @@ class Motion:
         if self._glide_thread and self._glide_thread.is_alive():
             self._glide_thread.join()
 
-    def point_in_direction(self, degrees):
+    def point_in_direction(self, degrees: int):
         if self.__movement_blocked:
             return
         
-        self.sprite.set_rotation(degrees)
+        self.sprite._set_rotation(degrees)
         self.__update_position()
 
     def point_towards(self, target):
@@ -90,31 +95,31 @@ class Motion:
         dx = target_x - self.sprite.center.x
         dy = target_y - self.sprite.center.y
         self.rotate_degrees = math.degrees(math.atan2(-dy, dx))
-        self.sprite.set_rotation(self.rotate_degrees)
+        self.sprite._set_rotation(self.rotate_degrees)
         self.__update_position()
 
-    def change_x_by(self, x):
+    def change_x_by(self, x: int):
         if self.__movement_blocked:
             return
         
         self.sprite.center.x += x
         self.__update_position()
 
-    def change_x_to(self, x):
+    def change_x_to(self, x: int):
         if self.__movement_blocked:
             return
         
         self.sprite.center.x = x
         self.__update_position()
 
-    def change_y_by(self, y):
+    def change_y_by(self, y: int):
         if self.__movement_blocked:
             return
         
         self.sprite.center.y += y
         self.__update_position()
 
-    def change_y_to(self, y):
+    def change_y_to(self, y: int):
         if self.__movement_blocked:
             return
         

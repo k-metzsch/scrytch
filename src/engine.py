@@ -20,7 +20,7 @@ class Engine:
                     self.running = False
 
             for sprite in self.sprites:
-                sprite.logic()
+                sprite.events()
 
             self.screen.fill((255, 255, 255))
 
