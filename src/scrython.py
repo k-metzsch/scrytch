@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-class Engine:
+class Scrython:
     def __init__(self, game_logic, width, height, title):
         pygame.init()
         pygame.display.set_caption(title)
@@ -16,14 +16,11 @@ class Engine:
         self.costumes = self.costumes()
         self.backdrops = self.backdrops()
         
-        if self.backdrops:
-            first_backdrop_path = next(iter(self.backdrops.values()))
-            self.background_image = pygame.image.load(first_backdrop_path).convert()
-        else:
-            self.background_image = None
+        self.background_image = (None, None)
+            
     
-    def _set_backdrop(self, backdrop_path):
-        self.background_image = pygame.image.load(backdrop_path).convert()
+    def _set_backdrop(self, backdrop_name, backdrop_path):
+        self.background_image = (backdrop_name, pygame.image.load(backdrop_path).convert())
 
     def run(self, fps=60):
         while self.running:
@@ -36,8 +33,8 @@ class Engine:
                 sprite.events()
 
             # Draw background
-            if self.background_image:
-                self.screen.blit(self.background_image, (0, 0))
+            if self.background_image and self.background_image[1]:
+                self.screen.blit(self.background_image[1], (0, 0))
             else:
                 self.screen.fill((255, 255, 255))
 

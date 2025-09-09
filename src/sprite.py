@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import time
 import pygame
 from src.motion import Motion
 from src.looks import Looks
