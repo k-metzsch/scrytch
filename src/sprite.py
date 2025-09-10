@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import threading
+import time
 import pygame
 from src.motion import Motion
 from src.looks import Looks
@@ -32,6 +34,9 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
     def get_pos(self) -> pygame.math.Vector2:
         return self.center
     
+    def wait(self, seconds):
+        time.sleep(seconds)
+
     def _switch_costume(self, costume_path: str):
         self.original_image = pygame.image.load(costume_path).convert_alpha()
         self.image = self.get_scaled_image(self.original_image, self.size)
