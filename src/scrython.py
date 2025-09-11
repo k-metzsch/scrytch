@@ -1,5 +1,5 @@
 import pygame
-import sys
+import asyncio
 
 class Scrython:
     def __init__(self, game_logic, width, height, title):
@@ -22,15 +22,30 @@ class Scrython:
     def _set_backdrop(self, backdrop_name, backdrop_path):
         self.background_image = (backdrop_name, pygame.image.load(backdrop_path).convert())
 
-    def run(self, fps=60):
+    async def run(self, fps=60):
+        for sprite in self.sprites:
+            if hasattr(sprite, "events"):
+                coro = getattr(sprite, "events")
+                if asyncio.iscoroutinefunction(coro):
+                    await coro()
+                else:
+                    coro()
+
+        frame_delay = 1.0 / float(fps) if fps else 0
+
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            # Call logic for all sprites
+            # Get logic from event in all sprites
             for sprite in self.sprites:
-                sprite.events()
+                if hasattr(sprite, "events"):
+                    fn = getattr(sprite, "events")
+                    if asyncio.iscoroutinefunction(fn):
+                        await fn()
+                    else:
+                        fn()
 
             # Draw background
             if self.background_image and self.background_image[1]:
@@ -44,6 +59,7 @@ class Scrython:
                 sprite._draw_bubble(self.screen)
 
             pygame.display.flip()
-            self.clock.tick(fps)
+            if frame_delay:
+                await asyncio.sleep(frame_delay)
         pygame.quit()
-        sys.exit()
+        return
