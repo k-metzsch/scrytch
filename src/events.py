@@ -11,7 +11,6 @@ class Events:
         self._sprite_click_down = False
 
     def _schedule(self, handler):
-        """Schedule handler: if async -> task, else offload to thread."""
         if asyncio.iscoroutinefunction(handler):
             asyncio.create_task(handler())
         else:
@@ -23,7 +22,6 @@ class Events:
             self.once = True
 
     def when_key_is_pressed(self, key: str, handler):
-        """Continuously invoke handler every frame while key is held (no threads)."""
         keys = pygame.key.get_pressed()
         if keys[KEYS[key]]:
             # Inline call for lightweight handlers; schedule if coroutine

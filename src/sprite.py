@@ -1,15 +1,13 @@
 from abc import ABC, abstractmethod
-import threading
-import time
+import asyncio
 import pygame
 from src.motion import Motion
 from src.looks import Looks
-from src.sensing import Sensing
 from src.events import Events
 from src.sound import Sound
 
 
-class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
+class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Events, Sound):
     def __init__(self, image_path: str, position: tuple[int, int] = (0, 0), size: int | None = None, shown: bool = True, direction: int = 0):
         self.original_image = pygame.image.load(image_path).convert_alpha()
         self.size = size if size else self.original_image.get_size()
@@ -22,7 +20,6 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
 
         pygame.sprite.Sprite.__init__(self)
         Motion.__init__(self, self)
-        Sensing.__init__(self, self)
         Looks.__init__(self, self)
         Events.__init__(self, self)
         Sound.__init__(self, self)
@@ -34,8 +31,8 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Sensing, Events, Sound):
     def get_pos(self) -> pygame.math.Vector2:
         return self.center
     
-    def wait(self, seconds):
-        time.sleep(seconds)
+    async def wait(self, seconds):
+        await asyncio.sleep(seconds)
 
     def _switch_costume(self, costume_path: str):
         self.original_image = pygame.image.load(costume_path).convert_alpha()

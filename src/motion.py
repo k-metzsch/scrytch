@@ -1,7 +1,8 @@
+import math
 import threading
 import time
+
 import pygame
-import math
 
 
 class Motion:
@@ -15,7 +16,7 @@ class Motion:
 
     def __update_position(self):
         self.sprite.rect.center = self.sprite.center
-    
+
     @property
     def mouse(self):
         return pygame.mouse
@@ -23,7 +24,7 @@ class Motion:
     def turn(self, degrees: int):
         if self.__movement_blocked:
             return
-        
+
         self.rotate_degrees += degrees
         self.sprite.__set_rotation(self.rotate_degrees)
         self.__update_position()
@@ -31,7 +32,7 @@ class Motion:
     def go_to(self, x, y):
         if self.__movement_blocked:
             return
-        
+
         self.sprite.center.x = x
         self.sprite.center.y = y
         self.__update_position()
@@ -40,41 +41,43 @@ class Motion:
         # Force disable all other animation besides stop_glide
         if force:
             self.__movement_blocked = True
-            
+
         while not self._glide_stop.is_set():
             direction = target - self.sprite.center
             distance = direction.length()
-            
+
             if distance < speed or distance == 0:
                 self.sprite.center = target
                 self.__update_position()
                 break
-            
+
             # Snap into into target location
             direction = direction.normalize()
             self.sprite.center += direction * speed
             self.__update_position()
             time.sleep(1 / fps)
-            
+
         if force:
             self.__movement_blocked = False
 
     def glide(self, speed: int, target_x: int, target_y: int, force: bool = True):
         self._glide_stop.set()
-        
+
         if self._glide_thread and self._glide_thread.is_alive():
             self._glide_thread.join()
-            
+
         self._glide_stop.clear()
         target = pygame.math.Vector2(target_x, target_y)
-        self._glide_thread = threading.Thread(target=self.__animate_glide, args=(target, speed, 60, force))
+        self._glide_thread = threading.Thread(
+            target=self.__animate_glide, args=(target, speed, 60, force)
+        )
         self._glide_thread.daemon = True
         self._glide_thread.start()
-        
+
     def glide_to_mouse(self, speed: int, force: bool = True):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         self.glide(speed, mouse_x, mouse_y, force)
-    
+
     def stop_glide(self):
         self._glide_stop.set()
         if self._glide_thread and self._glide_thread.is_alive():
@@ -83,14 +86,14 @@ class Motion:
     def point_in_direction(self, degrees: int):
         if self.__movement_blocked:
             return
-        
+
         self.sprite._set_rotation(degrees)
         self.__update_position()
 
     def point_towards(self, target):
         if self.__movement_blocked:
             return
-        
+
         target_x, target_y = target.get_pos()
         dx = target_x - self.sprite.center.x
         dy = target_y - self.sprite.center.y
@@ -101,31 +104,31 @@ class Motion:
     def change_x_by(self, x: int):
         if self.__movement_blocked:
             return
-        
+
         self.sprite.center.x += x
         self.__update_position()
 
     def change_x_to(self, x: int):
         if self.__movement_blocked:
             return
-        
+
         self.sprite.center.x = x
         self.__update_position()
 
     def change_y_by(self, y: int):
         if self.__movement_blocked:
             return
-        
+
         self.sprite.center.y += y
         self.__update_position()
 
     def change_y_to(self, y: int):
         if self.__movement_blocked:
             return
-        
+
         self.sprite.center.y = y
         self.__update_position()
-        
+
     def if_on_edge_bounce(self):
         rect = self.sprite.rect
         changed = False
@@ -148,3 +151,4 @@ class Motion:
         # If clamped, update center so future movements work correctly
         if changed:
             self.sprite.center = pygame.math.Vector2(rect.center)
+
