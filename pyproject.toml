@@ -1,0 +1,21 @@
+[project]
+name = "Scrytch"
+version = "1.0.1"
+authors = [
+  { name="Kian Metzsch", email="contact@ckm-tech.dev" },
+]
+description = "A Python project which imitates Scratch game logic"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pygame>=2.0.0"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/k-metzsch/scrytch"
+Issues = "https://github.com/k-metzsch/scrytch/issues"

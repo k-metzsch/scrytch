@@ -17,19 +17,16 @@ class Sound:
     def play_sound(
         self,
         sound_name: Optional[str] = None,
-        loops: int = 0,
         volume: Optional[float] = None,
     ) -> Optional[pygame.mixer.Channel]:
         sound = self.__get_sound(sound_name)
         if not sound:
             return None
         if volume is not None:
-            prev = sound.get_volume()
             sound.set_volume(max(0.0, min(1.0, volume)))
-            channel = sound.play(loops=loops)
-            sound.set_volume(prev)
+            channel = sound.play()
         else:
-            channel = sound.play(loops=loops)
+            channel = sound.play()
         if channel:
             self._active_channels.add(channel)
         return channel

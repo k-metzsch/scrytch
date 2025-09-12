@@ -1,14 +1,23 @@
-from abc import ABC, abstractmethod
 import asyncio
+from abc import ABC, abstractmethod
+
 import pygame
-from src.motion import Motion
-from src.looks import Looks
-from src.events import Events
-from src.sound import Sound
+
+from Scrytch.events import Events
+from Scrytch.looks import Looks
+from Scrytch.motion import Motion
+from Scrytch.sound import Sound
 
 
 class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Events, Sound):
-    def __init__(self, image_path: str, position: tuple[int, int] = (0, 0), size: int | None = None, shown: bool = True, direction: int = 0):
+    def __init__(
+        self,
+        image_path: str,
+        position: tuple[int, int] = (0, 0),
+        size: int | None = None,
+        shown: bool = True,
+        direction: int = 0,
+    ):
         self.original_image = pygame.image.load(image_path).convert_alpha()
         self.size = size if size else self.original_image.get_size()
         self.image = self.get_scaled_image(self.original_image, self.size)
@@ -23,14 +32,14 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Events, Sound):
         Looks.__init__(self, self)
         Events.__init__(self, self)
         Sound.__init__(self, self)
-        
+
     @abstractmethod
     def events(self):
         pass
 
     def get_pos(self) -> pygame.math.Vector2:
         return self.center
-    
+
     async def wait(self, seconds):
         await asyncio.sleep(seconds)
 
@@ -40,7 +49,9 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Events, Sound):
         self.image = pygame.transform.rotate(self.image, self.rotate_degrees)
         self._update_rect()
 
-    def get_scaled_image(self, image, size: int | tuple[int, int] | None) -> pygame.Surface:
+    def get_scaled_image(
+        self, image, size: int | tuple[int, int] | None
+    ) -> pygame.Surface:
         if size:
             if isinstance(size, tuple):
                 return pygame.transform.smoothscale(image, size)
@@ -62,3 +73,4 @@ class Sprite(ABC, pygame.sprite.Sprite, Motion, Looks, Events, Sound):
     def _draw(self, screen: pygame.Surface):
         if self.shown:
             screen.blit(self.image, self.rect)
+

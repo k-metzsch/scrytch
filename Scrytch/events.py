@@ -1,6 +1,9 @@
 import asyncio
+
 import pygame
-from src.keys import KEYS
+
+from Scrytch.keys import KEYS
+
 
 class Events:
     def __init__(self, sprite):
@@ -53,7 +56,10 @@ class Events:
         if self.sprite.main.background_image:
             current_backdrop_name = self.sprite.main.background_image[0]
 
-        if current_backdrop_name == backdrop_name and self._old_backdrop != current_backdrop_name:
+        if (
+            current_backdrop_name == backdrop_name
+            and self._old_backdrop != current_backdrop_name
+        ):
             self._schedule(handler)
         self._old_backdrop = current_backdrop_name
 
@@ -94,4 +100,6 @@ class BroadcastBus:
         if tasks:
             await asyncio.gather(*tasks)
 
+
 broadcast_bus = BroadcastBus()
+

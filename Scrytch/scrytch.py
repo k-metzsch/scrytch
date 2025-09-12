@@ -1,7 +1,9 @@
-import pygame
 import asyncio
 
-class Scrython:
+import pygame
+
+
+class Scrytch:
     def __init__(self, game_logic, width, height, title):
         pygame.init()
         pygame.display.set_caption(title)
@@ -10,17 +12,19 @@ class Scrython:
         self.clock = pygame.time.Clock()
         self.running = True
         self.game_logic = game_logic
-        
+
         # Initialize sprites, costumes, and backdrops
         self.sprites = self.sprites()
         self.costumes = self.costumes()
         self.backdrops = self.backdrops()
-        
+
         self.background_image = (None, None)
-            
-    
+
     def _set_backdrop(self, backdrop_name, backdrop_path):
-        self.background_image = (backdrop_name, pygame.image.load(backdrop_path).convert())
+        self.background_image = (
+            backdrop_name,
+            pygame.image.load(backdrop_path).convert(),
+        )
 
     async def run(self, fps=60):
         for sprite in self.sprites:
@@ -63,3 +67,4 @@ class Scrython:
                 await asyncio.sleep(frame_delay)
         pygame.quit()
         return
+
