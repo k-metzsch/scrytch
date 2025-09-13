@@ -6,9 +6,9 @@ authors = [
 ]
 description = "A Python project which imitates Scratch game logic"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 dependencies = [
-    "pygame>=2.0.0"
+    "pygame>=2.6.0"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
