@@ -24,8 +24,8 @@ jobs:
         run: |
           sed -i "s/^version = \".*\"/version = \"${RELEASE_VERSION}\"/" pyproject.toml
 
-      - name: Clean old builds from dist/
-        run: rm -rf dist/*
+      - name: Show pyproject.toml version
+        run: grep version pyproject.toml
 
       - name: Build release distributions
         run: |
