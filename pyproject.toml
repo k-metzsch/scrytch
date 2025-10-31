@@ -1,6 +1,6 @@
 [project]
 name = "Scrytch"
-version = "1.0.2"
+version = "1.0.0"
 authors = [
   { name="Kian Metzsch", email="contact@ckm-tech.dev" },
 ]
@@ -11,8 +11,7 @@ dependencies = [
     "pygame>=2.6.0"
 ]
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
+    "Intended Audience :: Education",
 ]
 license = "MIT"
 

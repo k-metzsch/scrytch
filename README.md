@@ -1,6 +1,6 @@
 # Scrytch
 
-**Scrytch** is a Python project that imitates Scratch game logic, making it easier to create interactive games and animations using Python. Built on top of [pygame](https://www.pygame.org/), Scrytch provides a simple API for sprites, backdrops, sounds, and more—ideal for educational projects, prototypes, or anyone who loves Scratch’s workflow but wants to use Python.
+**Scrytch** is a Python project that imitates Scratch game logic, making it easier to create interactive games and animations using Python. Built on top of [pygame](https://www.pygame.org/), Scrytch provides a simple API for sprites, backdrops, sounds, and is more ideal for educational projects, prototypes, or anyone who loves the Scratch workflow but wants to use Python.
 
 ---
 
@@ -26,16 +26,17 @@ pip install .
 
 Below is a minimal example showing how to set up a sprite and the main game class.
 
+
 ### (Sprite Example)
 
 ```python
 from Scrytch.sprite import Sprite
 
 class Cat(Sprite):
-    def __init__(self, main):
-        Sprite.__init__(
-            self,
-            image_path="sprites/cat.svg",
+  def __init__(self, main):
+      Sprite.__init__(
+          self,
+          image_path="sprites/cat.svg",
             position=(50, 80),
             size=(100),
             shown=True,
@@ -69,32 +70,38 @@ class Cat(Sprite):
 import asyncio
 
 from cat1 import Cat1
-from cat2 import Cat2
 from Scrytch.scrytch import Scrytch
 
 class Main(Scrytch):
-    def __init__(self, width=800, height=600, title="Scrython"):
-        Scrytch.__init__(self, self, width, height, title)
+    def __init__(self, title="Scrython"):
+        self.width=800
+        self.height=600
+        Scrytch.__init__(self, self, self.width, self.height, title)
 
     def sprites(self):
+        # Sprites goes here
         self.cat1 = Cat1(self)
-        self.cat2 = Cat2(self)
-        return [self.cat1, self.cat2]
+        return [
+            self.cat1
+        ]
 
     def backdrops(self):
+        # Backdrops goes here
         self._backdrops = {
             "backdrop1": "backdrops/backdrop1.jpg",
-            "backdrop2": "backdrops/backdrop2.jpg",
         }
         return self._backdrops
 
     def sounds(self):
-        self._sounds = {"meow": "sounds/meow.wav"}
+        # Sounds goes here
+        self._sounds = {
+            "meow": "sounds/meow.wav",
+        }
 
     def costumes(self):
+        # Costumes for sprites goes here
         self._costumes = {
             "costume1": "sprites/cat.svg",
-            "costume2": "sprites/g.png"
         }
         return self._costumes
 
